@@ -1,4 +1,4 @@
-from views import JSONResponseMixin
+from views import get_hybridview
 
 
 class AjaxMiddleware(object):
@@ -24,30 +24,8 @@ class AjaxMiddleware(object):
         OriginalView = getattr(module, func_name)
 
         if getattr(OriginalView, "get_json_context", False):
-            class HybridView(OriginalView, JSONResponseMixin):
 
-                @property
-                def is_ajax(self):
-                    return "json" in self.request.META.get("CONTENT_TYPE")
-
-                def render_to_response(self, context):
-                    cls = type(self).__bases__[self.is_ajax]
-                    return cls.render_to_response(self, context)
-
-                def get(self, request, *args, **kwargs):
-                    if self.is_ajax:
-                        context = self.get_json_context()
-                    else:
-                        # BaseCreateView.get or BaseUpdateView.get
-                        self.object = self.queryset and self.get_object()
-                        # ProcessFormView.get
-                        form_class = self.get_form_class()
-                        form = self.get_form(form_class)
-                        context = self.get_context_data(form=form)
-                    return self.render_to_response(context)
-
-
-            new_callback = HybridView.as_view()
+            new_callback = get_hybridview(OriginalView)
             return new_callback(request, *callback_args, **callback_kwargs)
 
         return None
