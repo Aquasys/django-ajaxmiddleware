@@ -27,10 +27,12 @@ class SomeDetailView(DetailView):
     default_context = {"bodyclass": "detail"}
 
     def get_json_context(self, **kwargs):
-        """get User object, return its fields name and value"""
-        userdict = self.model.objects.get(**kwargs).__dict__
-        userdict.pop("_state")  # can't dump a django.db.models.base.ModelState
-        return userdict
+        """We receive the object as kwargs, return the fields we're interested
+        on"""
+        context = kwargs.get("object").__dict__
+        context.pop("_state")  # ModelState object
+        context.update(self.default_context)
+        return context
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
@@ -46,7 +48,10 @@ class SomeListView(ListView):
 
     def get_json_context(self, **kwargs):
         """get User object, return its fields name and value"""
-        return self.default_context
+        user_list = kwargs.get("object_list")
+        context = dict(("name", u.name) for u in user_list)
+        context.update(self.default_context)
+        return context
 
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
@@ -89,7 +94,10 @@ class SomeUpdateView(UpdateView):
 
     def get_json_context(self, **kwargs):
         """get User object, return its fields name and value"""
-        return self.default_context
+        context = kwargs.get("object").__dict__
+        context.pop("_state")  # ModelState object
+        context.update(self.default_context)
+        return context
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)

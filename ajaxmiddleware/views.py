@@ -1,8 +1,8 @@
 from django import http
 from django.utils.simplejson import dumps
 from django.utils.translation import ugettext as _
-from django.views.generic.edit import BaseCreateView, BaseUpdateView,\
-                                      ProcessFormView
+from django.views.generic.detail import BaseDetailView
+from django.views.generic.edit import BaseUpdateView, ProcessFormView
 from django.views.generic.list import BaseListView
 
 
@@ -51,8 +51,10 @@ def get_hybridview(newcls):
             call super is not an option, as they return a render_to_response"""
 
             self.object = None
-            if isinstance(self, BaseUpdateView):
+            if any(isinstance(self, cls) for cls in (BaseUpdateView, BaseDetailView)):  #NOQA
                 self.object = self.get_object()
+                kwargs.update({"object" : self.object})
+
             if isinstance(self, BaseListView):
                 self.object_list = self.get_queryset()
                 allow_empty = self.get_allow_empty()
@@ -62,9 +64,28 @@ def get_hybridview(newcls):
                         "False.") % {'class_name': self.__class__.__name__},
                     )
                 kwargs.update({"object_list": self.object_list})
+
             if isinstance(self, ProcessFormView):
                 form_class = self.get_form_class()
                 kwargs.update({"form" : self.get_form(form_class)})
+
+            context = getattr(self, ["get_context_data", "get_json_context",
+                ][self.is_ajax])(**kwargs)
+            return self.render_to_response(context)
+
+        def post(self, request, *args, **kwargs):
+            """Hybrid post to handle all parents post actions"""
+
+            self.object = None
+            if isinstance(self, BaseUpdateView):
+                self.object = self.get_object()
+
+            if isinstance(self, ProcessFormView):
+                form_class = self.get_form_class()
+                kwargs.update({"form" : self.get_form(form_class)})
+                # TODO form_valid or form_invalid for render_to_response
+
+            # TODO return self.delete(*args, **kwargs)
 
             context = getattr(self, ["get_context_data", "get_json_context",
                 ][self.is_ajax])(**kwargs)

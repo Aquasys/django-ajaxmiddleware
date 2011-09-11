@@ -4,10 +4,10 @@
 {% for user in users %}
 <div id="user_{{ user.pk }}">
     <div class="name">
-        {{ object.name }}
+        {{ user.name }}
     </div>
     <div class="description">
-        {{ object.description }}
+        {{ user.description }}
     </div>
 </div>
 {% endfor %}
