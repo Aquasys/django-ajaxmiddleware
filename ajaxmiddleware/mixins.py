@@ -12,14 +12,15 @@ class JSONResponseMixin(object):
         """Returns a JSON response containing 'context' as payload"""
         post_actions = context.pop("post_actions", None)
         if post_actions:
-            if "success_url" in post_actions:
-                return HttpResponseRedirect(post_actions["success_url"])
-            elif "form_is_valid" in post_actions:
-                if post_actions["form_is_valid"]:
-                    return HttpResponseRedirect(self.get_success_url())
-                context.update({
-                    "errors": context["form"].errors,
-                })
+            #if "success_url" in post_actions:
+                #return HttpResponseRedirect(post_actions["success_url"])
+            if "form_is_valid" in post_actions:
+                #if post_actions["form_is_valid"]:
+                    #return HttpResponseRedirect(self.get_success_url())
+                if not post_actions["form_is_valid"]:
+                    context.update({
+                        "errors": context["form"].errors,
+                    })
         return self.get_json_response(self.convert_context_to_json(context))
 
     def get_json_response(self, content, **httpresponse_kwargs):
@@ -39,7 +40,7 @@ class JSONResponseMixin(object):
 class BaseListViewMixin(object):
     """Override the django BaseListView's get and post functions"""
 
-    def get(self, cls, request, *args, **kwargs):
+    def get(self, cls, **kwargs):
         cls.object_list = cls.get_queryset()
         allow_empty = cls.get_allow_empty()
         if not allow_empty and len(cls.object_list) == 0: raise http.Http404(
@@ -53,7 +54,7 @@ class BaseListViewMixin(object):
 class BaseCreateViewMixin(object):
     """Override the django BaseCreateView's get and post functions"""
 
-    def get(self, cls, request, *args, **kwargs):
+    def get(self, cls, **kwargs):
         cls.object = None
         kwargs.update({"object" : cls.object})
         return cls, kwargs
@@ -64,7 +65,7 @@ class BaseCreateViewMixin(object):
 class BaseUpdateViewMixin(object):
     """Override the django BaseUpdateView's get and post functions"""
 
-    def get(self, cls, request, *args, **kwargs):
+    def get(self, cls, **kwargs):
         cls.object = cls.get_object()
         kwargs.update({"object" : cls.object})
         return cls, kwargs
@@ -75,12 +76,12 @@ class BaseUpdateViewMixin(object):
 class ProcessFormViewMixin(object):
     """Override the django ProcessFormView's get and post functions"""
 
-    def get(self, cls, request, *args, **kwargs):
+    def get(self, cls, **kwargs):
         form_class = cls.get_form_class()
         kwargs.update({"form" : cls.get_form(form_class)})
         return cls, kwargs
 
-    def post(self, cls, request, *args, **kwargs):
+    def post(self, cls, **kwargs):
         form_class = cls.get_form_class()
         form = cls.get_form(form_class)
         kwargs.update({"form" : form})
@@ -93,7 +94,7 @@ class ProcessFormViewMixin(object):
 class BaseDetailViewMixin(object):
     """Override the django BaseDetailView's get and post functions"""
 
-    def get(self, cls, request, *args, **kwargs):
+    def get(self, cls, **kwargs):
         cls.object = cls.get_object()
         kwargs.update({"object" : cls.object})
         return cls, kwargs
@@ -102,13 +103,14 @@ class BaseDetailViewMixin(object):
 class BaseDeleteViewMixin(object):
     """Override the django BaseDeleteView's get and post functions"""
 
-    def get(self, cls, request, *args, **kwargs):
+    def get(self, cls, **kwargs):
         return cls, kwargs
 
-    def post(self, cls, request, *args, **kwargs):
+    def post(self, cls, **kwargs):
         cls.object = cls.get_object()
         cls.object.delete()
-        kwargs.update({"post_actions": {
-            "success_url" : cls.get_success_url(),
-        }})
+        kwargs.update({
+            "post_actions": {"success_url" : cls.get_success_url()},
+            "message": "Object delete !",
+        })
         return cls, kwargs

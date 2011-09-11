@@ -54,29 +54,40 @@ def get_hybridview(newcls):
             cls = type(self).__bases__[self.is_ajax]
             return cls.render_to_response(self, context)
 
-        def get(self, request, *args, **kwargs):
+        def get(self, request, **kwargs):
             if not self.is_ajax:
                 "If it's not ajax, return the inherited get"
                 return super(HybridView, self).get(self, **kwargs)
 
             for mixin in self.mixins.itervalues():
-                self, kwargs = mixin().get(self, request, *args, **kwargs)
+                self, kwargs = mixin().get(self, **kwargs)
 
-            context = getattr(self, ["get_context_data", "get_json_context",
-                ][self.is_ajax])(**kwargs)
-            return self.render_to_response(context)
+            context = kwargs
+            context.update(self.get_json_context(**kwargs))
+            context.pop("form", None)
+            context.pop("object", None)
+            context.pop("object_list", None)
+            try:
+                return self.render_to_response(context)
+            except:
+                import ipdb; ipdb.set_trace()
 
-        def post(self, request, *args, **kwargs):
+        def post(self, request, **kwargs):
             """Hybrid post to handle all parents post actions"""
             if not self.is_ajax:
                 "If it's not ajax, return the inherited get"
                 return super(HybridView, self).post(self, **kwargs)
 
             for mixin in self.mixins.itervalues():
-                self, kwargs = mixin().post(self, request, *args, **kwargs)
+                try:
+                    self, kwargs = mixin().post(self, **kwargs)
+                except AttributeError:
+                    """The inherited view doesn't handle post"""
+                    pass
 
-            context = getattr(self, ["get_context_data", "get_json_context",
-                ][self.is_ajax])(**kwargs)
+            context = kwargs
+            context.update(self.get_json_context(**kwargs))
+            context.pop("form", None)
             return self.render_to_response(context)
 
     return HybridView.as_view()

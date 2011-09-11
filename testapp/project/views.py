@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.views.generic import *  # NOQA
 
 from forms import SomeForm
@@ -108,6 +109,9 @@ class SomeUpdateView(UpdateView):
 class SomeDeleteView(DeleteView):
     model = User
     default_context = {"bodyclass": "delete"}
+
+    def get_success_url(self):
+        return reverse("template_view")
 
     def get_json_context(self, **kwargs):
         """get User object, return its fields name and value"""
