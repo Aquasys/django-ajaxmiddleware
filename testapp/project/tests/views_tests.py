@@ -38,3 +38,8 @@ class ViewsTestCase(TestCase):
     def test_createview(self):
         """Tests for CreateView with html and ajax requests"""
         pass
+
+    @html_ajax_test(url=reverse("update_view", args=(1, )))
+    def test_updateview(self):
+        """Tests for UpdateView with html and ajax requests"""
+        pass
