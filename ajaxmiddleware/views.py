@@ -1,31 +1,19 @@
-from django import http
-from django.utils.simplejson import dumps
-from django.utils.translation import ugettext as _
+import logging
+import sys
+if sys.version_info < (2, 7):
+    from ordereddict import OrderedDict
+else:
+    from collections import OrderedDict
+
 from django.views.generic.detail import BaseDetailView
-from django.views.generic.edit import BaseUpdateView, ProcessFormView
+from django.views.generic.edit import BaseCreateView, BaseUpdateView,\
+                                      ProcessFormView
 from django.views.generic.list import BaseListView
 
+from mixins import JSONResponseMixin, BaseListViewMixin, BaseUpdateViewMixin,\
+    BaseCreateViewMixin, BaseDetailViewMixin, ProcessFormViewMixin
 
-class JSONResponseMixin(object):
-    """Response Mixin which takes care of dumping the context in json format,
-    and return the correct HttpResponse"""
-
-    def render_to_response(self, context, *args, **kwargs):
-        """Returns a JSON response containing 'context' as payload"""
-        return self.get_json_response(self.convert_context_to_json(context))
-
-    def get_json_response(self, content, **httpresponse_kwargs):
-        """Construct an `HttpResponse` object."""
-        return http.HttpResponse(content, content_type='application/json',
-            **httpresponse_kwargs)
-
-    def convert_context_to_json(self, context):
-        """If the context hasn't been dumped in the get_json_context,
-        Convert the context dictionary into a JSON object"""
-        if type(context) == str:
-            """context has already been dumped"""
-            return context
-        return dumps(context)
+logger = logging.getLogger("ajaxmiddleware")
 
 
 def get_hybridview(newcls):
@@ -34,6 +22,24 @@ def get_hybridview(newcls):
     class HybridView(newcls, JSONResponseMixin):
         """Middleware class which add the JSONResponseMixin in the view to
         handle ajax requests"""
+
+        def __init__(self, *args, **kwargs):
+            """Our newcls can be an instance of several mixins working with the
+            get and post functions.
+            e.g : CreateView is instance of BaseCreateView and ProcessFormView
+            Let's add our custom mixins that implement get and post without
+            returning a render_to_response, and call """
+
+            newcls.__init__(self, **kwargs)
+            # The order matters for the get/post calls.
+            self.mixins = OrderedDict()
+            self.mixins[BaseListView] = BaseListViewMixin
+            self.mixins[BaseCreateView] = BaseCreateViewMixin
+            self.mixins[BaseUpdateView] = BaseUpdateViewMixin
+            self.mixins[BaseDetailView] = BaseDetailViewMixin
+            self.mixins[ProcessFormView] = ProcessFormViewMixin
+            [self.mixins.pop(baseView) for baseView in self.mixins.iterkeys()
+                if not isinstance(self, baseView)]
 
         @property
         def is_ajax(self):
@@ -48,26 +54,14 @@ def get_hybridview(newcls):
 
         def get(self, request, *args, **kwargs):
             """As we override the parents' get, we need to redo their job here.
-            call super is not an option, as they return a render_to_response"""
+            call super is not an option, as they return a render_to_response
 
-            self.object = None
-            if any(isinstance(self, cls) for cls in (BaseUpdateView, BaseDetailView)):  #NOQA
-                self.object = self.get_object()
-                kwargs.update({"object" : self.object})
-
-            if isinstance(self, BaseListView):
-                self.object_list = self.get_queryset()
-                allow_empty = self.get_allow_empty()
-                if not allow_empty and len(self.object_list) == 0:
-                    raise http.Http404(
-                        _(u"Empty list and '%(class_name)s.allow_empty' is "
-                        "False.") % {'class_name': self.__class__.__name__},
-                    )
-                kwargs.update({"object_list": self.object_list})
-
-            if isinstance(self, ProcessFormView):
-                form_class = self.get_form_class()
-                kwargs.update({"form" : self.get_form(form_class)})
+            To remedy this problem, Mixins have been written for each of these
+            parents which contain a get or post funcfion, and return context
+            instead of a response
+            """
+            for mixin in self.mixins.itervalues():
+                self, kwargs = mixin().get(self, request, *args, **kwargs)
 
             context = getattr(self, ["get_context_data", "get_json_context",
                 ][self.is_ajax])(**kwargs)
@@ -76,7 +70,6 @@ def get_hybridview(newcls):
         def post(self, request, *args, **kwargs):
             """Hybrid post to handle all parents post actions"""
 
-            self.object = None
             if isinstance(self, BaseUpdateView):
                 self.object = self.get_object()
 
@@ -90,5 +83,6 @@ def get_hybridview(newcls):
             context = getattr(self, ["get_context_data", "get_json_context",
                 ][self.is_ajax])(**kwargs)
             return self.render_to_response(context)
+
 
     return HybridView.as_view()

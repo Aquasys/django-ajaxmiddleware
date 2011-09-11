@@ -1,10 +1,13 @@
 import os
-
 from setuptools import setup, find_packages
+import sys
 
 
 MODULE_NAME = 'ajaxmiddleware'
 
+REQUIRES = ['Django>=1.3',]
+if sys.version_info < (2, 7):
+    REQUIRES.append("ordereddict>=1.1")
 
 def read(fname):
     try:
@@ -31,8 +34,10 @@ META_DATA = dict(
         'Programming Language :: Python',
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-
-    packages=find_packages(),
+    install_requires=REQUIRES,
+    packages=find_packages(exclude=["testapp", ]),
+    include_package_data=True,
+    zip_safe = False,
 )
 
 if __name__ == "__main__":
