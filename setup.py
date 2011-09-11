@@ -15,15 +15,21 @@ def read(fname):
 
 META_DATA = dict(
     name="ajaxmiddleware",
-    version=1.0,
+    version=0.1,
 
     author="Adrien Lemaire",
     author_email="lemaire.adrien@gmail.com",
+    url='http://github.com/Fandekasp/django-ajaxmiddleware',
 
     keywords='ajax django',
     classifiers=[
+        "Development Status :: 1 - Planning",
+        "License :: OSI Approved :: BSD License",
+        "Framework :: Django",
         'Intended Audience :: Developers',
+        "Operating System :: OS Independent",
         'Programming Language :: Python',
+        "Topic :: Software Development :: Libraries :: Python Modules",
     ],
 
     packages=find_packages(),
