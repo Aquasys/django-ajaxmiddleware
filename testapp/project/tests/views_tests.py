@@ -16,12 +16,20 @@ class ViewsTestCase(TestCase):
 
     @html_ajax_test(url=reverse("template_view"))
     def test_templateview(self):
+        """Tests for TemplateView with html and ajax requests"""
         pass
 
     @html_ajax_test(url=reverse("details_view", args=(1, )))
     def test_detailview(self):
+        """Tests for DetailView with html and ajax requests"""
         pass
 
     @html_ajax_test(url=reverse("list_view"))
     def test_listview(self):
+        """Tests for ListView with html and ajax requests"""
+        pass
+
+    @html_ajax_test(url=reverse("form_view"))
+    def test_formview(self):
+        """Tests for FormView with html and ajax requests"""
         pass

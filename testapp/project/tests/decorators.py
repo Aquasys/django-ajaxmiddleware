@@ -15,11 +15,12 @@ def html_ajax_test(orig_test=None, url=None):
             response = self.client.get(url)
             self.assertRaises(ValueError, json.loads, response.content)
             self.assertIsInstance(response, TemplateResponse)
+            logger.info("\nhtml:\t%s" % ", ".join(response.template_name))
             # ajax request
             response = self.client.get(url, CONTENT_TYPE="application/json")
             self.assertNotIsInstance(response, TemplateResponse)
             self.assertIsInstance(json.loads(response.content), dict)
-            logger.info("\njson:\n%s" % response.content)
+            logger.info("\njson:\t%s" % response.content)
             # Execute the rest of the test
             return test_func(self)
 

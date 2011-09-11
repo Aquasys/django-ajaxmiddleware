@@ -1,9 +1,10 @@
 from django.views.generic import *  # NOQA
 
+from forms import SomeForm
 from models import User
 
 
-class AboutView(TemplateView):
+class SomeTemplateView(TemplateView):
     template_name = "project/about.html"
     default_context = {
         "bodyclass": "about",
@@ -20,7 +21,7 @@ class AboutView(TemplateView):
         return self.default_context
 
 
-class DetailView(DetailView):
+class SomeDetailView(DetailView):
     template_name = "project/about.html"
     model = User
 
@@ -38,7 +39,7 @@ class DetailView(DetailView):
         return context
 
 
-class ListView(ListView):
+class SomeListView(ListView):
     template_name = "project/list.html"
     model = User
     context_object_name = "users"
@@ -51,5 +52,21 @@ class ListView(ListView):
         context = super(ListView, self).get_context_data(**kwargs)
         context.update({
             "bodyclass": "lists",
+        })
+        return context
+
+
+class SomeFormView(FormView):
+    template_name = "project/form.html"
+    form_class = SomeForm
+
+    def get_json_context(self, **kwargs):
+        """get User object, return its fields name and value"""
+        return {}
+
+    def get_context_data(self, **kwargs):
+        context = super(FormView, self).get_context_data(**kwargs)
+        context.update({
+            "bodyclass": "form",
         })
         return context
