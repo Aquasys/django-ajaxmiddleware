@@ -1,6 +1,9 @@
 import json
+import logging
 
 from django.template.response import TemplateResponse
+
+logger = logging.getLogger(__name__.split(".")[0])
 
 
 def html_ajax_test(orig_test=None, url=None):
@@ -16,7 +19,7 @@ def html_ajax_test(orig_test=None, url=None):
             response = self.client.get(url, CONTENT_TYPE="application/json")
             self.assertNotIsInstance(response, TemplateResponse)
             self.assertIsInstance(json.loads(response.content), dict)
-            print response.content
+            logger.info("\njson:\n%s" % response.content)
             # Execute the rest of the test
             return test_func(self)
 
