@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     url(r'^details/(?P<pk>\d+)/$', SomeDetailView.as_view(), name="details_view"),
     url(r'^list/$', SomeListView.as_view(), name="list_view"),
     url(r'^form/$', SomeFormView.as_view(), name="form_view"),
+    url(r'^create/$', SomeCreateView.as_view(), name="create_view"),
 )

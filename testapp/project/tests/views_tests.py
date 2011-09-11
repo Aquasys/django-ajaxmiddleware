@@ -33,3 +33,8 @@ class ViewsTestCase(TestCase):
     def test_formview(self):
         """Tests for FormView with html and ajax requests"""
         pass
+
+    @html_ajax_test(url=reverse("create_view"))
+    def test_createview(self):
+        """Tests for CreateView with html and ajax requests"""
+        pass

@@ -50,8 +50,9 @@ def get_hybridview(newcls):
             """As we override the parents' get, we need to redo their job here.
             call super is not an option, as they return a render_to_response"""
 
-            if [isinstance(self, c) for c in (BaseCreateView, BaseUpdateView)]:
-                self.object = hasattr(self, "get_object") and self.get_object()
+            self.object = None
+            if isinstance(self, BaseUpdateView):
+                self.object = self.get_object()
             if isinstance(self, BaseListView):
                 self.object_list = self.get_queryset()
                 allow_empty = self.get_allow_empty()

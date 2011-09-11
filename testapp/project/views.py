@@ -57,7 +57,7 @@ class SomeListView(ListView):
 
 
 class SomeFormView(FormView):
-    template_name = "project/form.html"
+    template_name = "project/user_form.html"
     form_class = SomeForm
 
     def get_json_context(self, **kwargs):
@@ -68,5 +68,20 @@ class SomeFormView(FormView):
         context = super(FormView, self).get_context_data(**kwargs)
         context.update({
             "bodyclass": "form",
+        })
+        return context
+
+
+class SomeCreateView(CreateView):
+    model = User
+
+    def get_json_context(self, **kwargs):
+        """get User object, return its fields name and value"""
+        return {}
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateView, self).get_context_data(**kwargs)
+        context.update({
+            "bodyclass": "create",
         })
         return context
