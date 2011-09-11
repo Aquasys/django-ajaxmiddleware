@@ -1,5 +1,9 @@
 from django import http
 from django.utils.simplejson import dumps
+from django.utils.translation import ugettext as _
+from django.views.generic.edit import BaseCreateView, BaseUpdateView,\
+                                      ProcessFormView
+from django.views.generic.list import BaseListView
 
 
 class JSONResponseMixin(object):
@@ -43,10 +47,21 @@ def get_hybridview(newcls):
             return cls.render_to_response(self, context)
 
         def get(self, request, *args, **kwargs):
-            # BaseCreateView.get or BaseUpdateView.get
-            self.object = hasattr(self, "queryset") and self.get_object()
-            # ProcessFormView.get
-            if hasattr(self, "get_form"):
+            """As we override the parents' get, we need to redo their job here.
+            call super is not an option, as they return a render_to_response"""
+
+            if [isinstance(self, c) for c in (BaseCreateView, BaseUpdateView)]:
+                self.object = hasattr(self, "get_object") and self.get_object()
+            if isinstance(self, BaseListView):
+                self.object_list = self.get_queryset()
+                allow_empty = self.get_allow_empty()
+                if not allow_empty and len(self.object_list) == 0:
+                    raise http.Http404(
+                        _(u"Empty list and '%(class_name)s.allow_empty' is "
+                        "False.") % {'class_name': self.__class__.__name__},
+                    )
+                kwargs.update({"object_list": self.object_list})
+            if isinstance(self, ProcessFormView):
                 form_class = self.get_form_class()
                 kwargs.update({"form" : self.get_form(form_class)})
 

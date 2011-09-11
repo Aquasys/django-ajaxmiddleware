@@ -1,8 +1,8 @@
-import json
 
 from django.core.urlresolvers import reverse
-from django.template.response import TemplateResponse
 from django.test import TestCase
+
+from decorators import html_ajax_test
 
 
 class ViewsTestCase(TestCase):
@@ -14,25 +14,14 @@ class ViewsTestCase(TestCase):
         RedirectView
     """
 
-    def __ajaxtest(self, url, response):
-        """private function used by tests"""
-        # normal request
-        self.assertRaises(ValueError, json.loads, response.content)
-        self.assertIsInstance(response, TemplateResponse)
-        # ajax request
-        response = self.client.get(url, CONTENT_TYPE="application/json")
-        self.assertNotIsInstance(response, TemplateResponse)
-        self.assertIsInstance(json.loads(response.content), dict)
-        print response.content
-
+    @html_ajax_test(url=reverse("template_view"))
     def test_templateview(self):
-        """Test that the generic TemplateView handle html and json responses"""
-        url = reverse("template_view")
-        response = self.client.get(url)
-        self.__ajaxtest(url, response)
+        pass
 
+    @html_ajax_test(url=reverse("details_view", args=(1, )))
     def test_detailview(self):
-        """Test that the generic DetailView handle html and json responses"""
-        url = reverse("details_view", args=(1, ))
-        response = self.client.get(url)
-        self.__ajaxtest(url, response)
+        pass
+
+    @html_ajax_test(url=reverse("list_view"))
+    def test_listview(self):
+        pass

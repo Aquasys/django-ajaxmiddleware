@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block main %}
+{% for user in users %}
+<div id="user_{{ user.pk }}">
+    <div class="name">
+        {{ object.name }}
+    </div>
+    <div class="description">
+        {{ object.description }}
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

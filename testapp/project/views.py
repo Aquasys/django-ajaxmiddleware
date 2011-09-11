@@ -36,3 +36,20 @@ class DetailView(DetailView):
             "bodyclass": "details",
         })
         return context
+
+
+class ListView(ListView):
+    template_name = "project/list.html"
+    model = User
+    context_object_name = "users"
+
+    def get_json_context(self, **kwargs):
+        """get User object, return its fields name and value"""
+        return {}
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context.update({
+            "bodyclass": "lists",
+        })
+        return context

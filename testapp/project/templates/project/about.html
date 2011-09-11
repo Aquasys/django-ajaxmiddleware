@@ -1,17 +1,10 @@
-<html>
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+{% extends "base.html" %}
 
-    <title>About</title>
-</head>
-<body class="{{ bodyclass }}">
-    {% block main %}
-    <div id="name">
-        {{ object.name }}
-    </div>
-    <div id="description">
-        {{ object.description }}
-    </div>
-    {% endblock %}
-</body>
-</html>
+{% block main %}
+<div id="name">
+    {{ object.name }}
+</div>
+<div id="description">
+    {{ object.description }}
+</div>
+{% endblock %}
