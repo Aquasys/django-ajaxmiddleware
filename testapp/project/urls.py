@@ -4,5 +4,6 @@ from views import *  # NOQA
 
 
 urlpatterns = patterns('',
-    url(r'^templateview/$', AboutView.as_view(), name="template_view"),
+    url(r'^about/$', AboutView.as_view(), name="template_view"),
+    url(r'^details/(?P<pk>\d+)/$', DetailView.as_view(), name="details_view"),
 )
