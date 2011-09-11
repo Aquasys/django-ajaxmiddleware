@@ -7,11 +7,12 @@ else:
 
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.edit import BaseCreateView, BaseUpdateView,\
-                                      ProcessFormView
+                                      ProcessFormView, BaseDeleteView
 from django.views.generic.list import BaseListView
 
 from mixins import JSONResponseMixin, BaseListViewMixin, BaseUpdateViewMixin,\
-    BaseCreateViewMixin, BaseDetailViewMixin, ProcessFormViewMixin
+            BaseCreateViewMixin, BaseDetailViewMixin, ProcessFormViewMixin,\
+            BaseDeleteViewMixin
 
 logger = logging.getLogger("ajaxmiddleware")
 
@@ -37,6 +38,7 @@ def get_hybridview(newcls):
             self.mixins[BaseCreateView] = BaseCreateViewMixin
             self.mixins[BaseUpdateView] = BaseUpdateViewMixin
             self.mixins[BaseDetailView] = BaseDetailViewMixin
+            self.mixins[BaseDeleteView] = BaseDeleteViewMixin
             self.mixins[ProcessFormView] = ProcessFormViewMixin
             [self.mixins.pop(baseView) for baseView in self.mixins.iterkeys()
                 if not isinstance(self, baseView)]
@@ -53,13 +55,10 @@ def get_hybridview(newcls):
             return cls.render_to_response(self, context)
 
         def get(self, request, *args, **kwargs):
-            """As we override the parents' get, we need to redo their job here.
-            call super is not an option, as they return a render_to_response
+            if not self.is_ajax:
+                "If it's not ajax, return the inherited get"
+                return super(HybridView, self).get(self, **kwargs)
 
-            To remedy this problem, Mixins have been written for each of these
-            parents which contain a get or post funcfion, and return context
-            instead of a response
-            """
             for mixin in self.mixins.itervalues():
                 self, kwargs = mixin().get(self, request, *args, **kwargs)
 
@@ -69,20 +68,15 @@ def get_hybridview(newcls):
 
         def post(self, request, *args, **kwargs):
             """Hybrid post to handle all parents post actions"""
+            if not self.is_ajax:
+                "If it's not ajax, return the inherited get"
+                return super(HybridView, self).post(self, **kwargs)
 
-            if isinstance(self, BaseUpdateView):
-                self.object = self.get_object()
-
-            if isinstance(self, ProcessFormView):
-                form_class = self.get_form_class()
-                kwargs.update({"form" : self.get_form(form_class)})
-                # TODO form_valid or form_invalid for render_to_response
-
-            # TODO return self.delete(*args, **kwargs)
+            for mixin in self.mixins.itervalues():
+                self, kwargs = mixin().post(self, request, *args, **kwargs)
 
             context = getattr(self, ["get_context_data", "get_json_context",
                 ][self.is_ajax])(**kwargs)
             return self.render_to_response(context)
-
 
     return HybridView.as_view()
