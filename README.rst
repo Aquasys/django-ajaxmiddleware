@@ -54,3 +54,11 @@ Limitations
 ===========
 
 * Currently work only for django >= 1.3 with class-based views.
+
+TODO
+====
+
+* improve is_ajax with django.http.is_ajax
+* convert_context_to_json check if context is already dumped or not
+* allow a get_json_response or a convert_context_to_json
+* write tests to cover all generic class-based views

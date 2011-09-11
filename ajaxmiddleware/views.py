@@ -7,28 +7,36 @@ class JSONResponseMixin(object):
     and return the correct HttpResponse"""
 
     def render_to_response(self, context, *args, **kwargs):
-        "Returns a JSON response containing 'context' as payload"
+        """Returns a JSON response containing 'context' as payload"""
         return self.get_json_response(self.convert_context_to_json(context))
 
     def get_json_response(self, content, **httpresponse_kwargs):
-        "Construct an `HttpResponse` object."
+        """Construct an `HttpResponse` object."""
         return http.HttpResponse(content, content_type='application/json',
             **httpresponse_kwargs)
 
     def convert_context_to_json(self, context):
-        "Convert the context dictionary into a JSON object"
+        """If the context hasn't been dumped in the get_json_context,
+        Convert the context dictionary into a JSON object"""
+        if type(context) == str:
+            """context has already been dumped"""
+            return context
         return dumps(context)
 
 
 def get_hybridview(newcls):
     """lambda-like function to create a view inheriting our callback"""
+
     class HybridView(newcls, JSONResponseMixin):
         """Middleware class which add the JSONResponseMixin in the view to
         handle ajax requests"""
 
         @property
         def is_ajax(self):
-            return "json" in self.request.META.get("CONTENT_TYPE")
+            """Check the META HTTP_X_REQUESTED_WITH and CONTENT_TYPE"""
+            meta = self.request.META
+            return meta.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'\
+                or "json" in meta.get("CONTENT_TYPE")
 
         def render_to_response(self, context):
             cls = type(self).__bases__[self.is_ajax]
