@@ -2,7 +2,7 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from decorators import html_ajax_test
+from ajaxmiddleware.decorators import html_ajax_test
 
 
 class ViewsTestCase(TestCase):
@@ -42,4 +42,10 @@ class ViewsTestCase(TestCase):
     @html_ajax_test(url=reverse("update_view", args=(1, )))
     def test_updateview(self):
         """Tests for UpdateView with html and ajax requests"""
+        pass
+
+    @html_ajax_test(url=reverse("delete_view", args=(1, )))
+    def test_deleteview(self):
+        """Tests for DeleteView with html and ajax requests"""
+        # We can't delete an object from a get request
         pass

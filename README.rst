@@ -54,9 +54,34 @@ Limitations
 ===========
 
 * Currently work only for django >= 1.3 with class-based views.
+* Currently only work for GET requests
+
 
 TODO
 ====
 
 * allow a get_json_response or a convert_context_to_json
-* write tests to cover all generic class-based views
+* write tests to cover Date-based views
+* handle POST requests (especially for DeleteView)
+
+
+BONUS
+=====
+
+You can use the decorator ajaxmiddleware.decorators.html_ajax_test for your own
+tests to insure html and ajax requests are covered correctly::
+
+    from django.core.urlresolvers import reverse
+    from django.test import TestCase
+    from decorators import html_ajax_test
+
+
+    class ViewsTestCase(TestCase):
+
+        @html_ajax_test(url=reverse("some_url_name"))
+        def test_templateview(self):
+            """Tests for TemplateView with html and ajax requests"""
+            pass
+
+You can also add the *ajaxmiddleware* logger to get a verbose output while
+running these tests (see ``testapp.settings.LOGGING``)

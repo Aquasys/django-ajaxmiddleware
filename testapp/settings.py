@@ -138,7 +138,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'project': {
+        'ajaxmiddleware': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,

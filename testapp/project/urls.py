@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^form/$', SomeFormView.as_view(), name="form_view"),
     url(r'^create/$', SomeCreateView.as_view(), name="create_view"),
     url(r'^update/(?P<pk>\d+)/$', SomeUpdateView.as_view(), name="update_view"),
+    url(r'^delete/(?P<pk>\d+)/$', SomeDeleteView.as_view(), name="delete_view"),
 )

@@ -95,3 +95,17 @@ class SomeUpdateView(UpdateView):
         context = super(UpdateView, self).get_context_data(**kwargs)
         context.update(self.default_context)
         return context
+
+
+class SomeDeleteView(DeleteView):
+    model = User
+    default_context = {"bodyclass": "delete"}
+
+    def get_json_context(self, **kwargs):
+        """get User object, return its fields name and value"""
+        return self.default_context
+
+    def get_context_data(self, **kwargs):
+        context = super(DeleteView, self).get_context_data(**kwargs)
+        context.update(self.default_context)
+        return context
