@@ -12,8 +12,14 @@ class AjaxMiddleware(object):
         A class-based view will at this step be a function (maybe I can
         improve this later from the process_request function).
         """
-        import ipdb; ipdb.set_trace()
-        try:
+        OriginalView = callback
+        if getattr(callback, "func_closure", None) and\
+                len(callback.func_closure) == 2:
+            """hasattr is not enough, as we can get an empty func_closure with
+            the callback.
+            If we get more than 2 arguments in the func_closure, then it's a
+            redirection like a login for a permission_required decored view
+            """
             module = callback.func_closure[1].cell_contents.__module__
             func_name = callback.func_name
 
@@ -27,14 +33,7 @@ class AjaxMiddleware(object):
                     __import__(module, globals(), locals(), [func_name, ], -1),
                     func_name,
                 )
-        except TypeError:
-            """Different request, like django.views.static.serve"""
-            return None
-        except AttributeError:
-            """We got directly the view as callback instead of a closure"""
-            OriginalView = callback
-
-        if getattr(OriginalView, "get_json_context", False):
+        if hasattr(OriginalView, "get_json_context"):
             new_callback = get_hybridview(OriginalView)
             return new_callback(request, *callback_args, **callback_kwargs)
 
