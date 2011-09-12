@@ -22,7 +22,7 @@ First, install the application::
 
     $ pip install django-ajaxmiddleware
 
-.. alert:: while it's in a early stage, I'd recommend to pull from github instead::
+.. attention:: while it's in a early stage, I'd recommend to pull from github instead::
 
     $ pip install -e git+https://Fandekasp@github.com/Fandekasp/django-ajaxmiddleware.git#egg=ajaxmiddleware
 
