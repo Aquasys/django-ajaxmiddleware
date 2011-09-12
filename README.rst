@@ -20,7 +20,7 @@ Installation
 
 First, install the application::
 
-    $ pip install -e git+https://github.com/Fandekasp/django-ajaxmiddleware#egg=ajaxmiddleware
+    $ pip install django-ajaxmiddleware
 
 Then, add the new middleware in your settings::
 
@@ -54,7 +54,6 @@ Limitations
 ===========
 
 * Currently work only for django >= 1.3 with class-based views.
-* Currently only work for GET requests
 
 
 TODO
@@ -62,7 +61,6 @@ TODO
 
 * allow a get_json_response or a convert_context_to_json
 * write tests to cover Date-based views
-* handle POST requests (especially for DeleteView)
 
 
 BONUS
@@ -82,6 +80,8 @@ tests to insure html and ajax requests are covered correctly::
         def test_templateview(self):
             """Tests for TemplateView with html and ajax requests"""
             pass
+
+.. note:: This will only test for GET requests
 
 You can also add the *ajaxmiddleware* logger to get a verbose output while
 running these tests (see ``testapp.settings.LOGGING``)

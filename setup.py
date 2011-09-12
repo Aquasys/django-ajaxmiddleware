@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 from setuptools import setup, find_packages
 import sys
@@ -9,24 +10,18 @@ REQUIRES = ['Django>=1.3',]
 if sys.version_info < (2, 7):
     REQUIRES.append("ordereddict>=1.1")
 
-def read(fname):
-    try:
-        return open(os.path.join(os.path.dirname(__file__), fname)).read()
-    except IOError:
-        return ''
-
 
 META_DATA = dict(
     name="ajaxmiddleware",
     version=0.1,
-
+    description="middleware to handle ajax requests really easily",
     author="Adrien Lemaire",
     author_email="lemaire.adrien@gmail.com",
     url='http://github.com/Fandekasp/django-ajaxmiddleware',
 
     keywords='ajax django',
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 4 - Beta",
         "License :: OSI Approved :: BSD License",
         "Framework :: Django",
         'Intended Audience :: Developers',

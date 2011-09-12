@@ -2,3 +2,5 @@
 *pyc
 .ropeproject
 *.db
+ajaxmiddleware.egg-info/
+dist
