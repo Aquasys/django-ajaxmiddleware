@@ -49,6 +49,12 @@ You can verify the json response with curl::
     {"foo": "bar"}
     $
 
+.. TIP:: If you test a view which requires login, you can add a **curl** value
+    in your post data, and the middleware will disable the csrf check for you::
+
+    $ curl -d "username=bobthesponge&password=test123&curl" -L -H 'Content-type: application/json'\
+        http://127.0.0.1:8000/accounts/login/\?next\=/testview/
+
 
 Limitations
 ===========

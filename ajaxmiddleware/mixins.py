@@ -1,5 +1,5 @@
 from django import http
-from django.http import HttpResponseRedirect
+#from django.http import HttpResponseRedirect
 from django.utils.simplejson import dumps
 from django.utils.translation import ugettext as _
 

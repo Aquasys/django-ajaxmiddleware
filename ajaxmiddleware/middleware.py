@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from views import get_hybridview
 
 
@@ -6,6 +8,10 @@ class AjaxMiddleware(object):
     Middleware to handle ajax requests and return a json response for each view
     implementing a get_json_context function.
     """
+
+    def process_request(self, request):
+        if settings.DEBUG and request.REQUEST.has_key("curl"):
+            setattr(request, '_dont_enforce_csrf_checks', True)
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
         """Check the type of the callback before processing it.
