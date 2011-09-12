@@ -22,6 +22,10 @@ First, install the application::
 
     $ pip install django-ajaxmiddleware
 
+.. alert:: while it's in a early stage, I'd recommend to pull from github instead::
+
+    $ pip install -e git+https://Fandekasp@github.com/Fandekasp/django-ajaxmiddleware.git#egg=ajaxmiddleware
+
 Then, add the new middleware in your settings::
 
     from django.conf.global_settings import MIDDLEWARE_CLASSES
@@ -49,11 +53,10 @@ You can verify the json response with curl::
     {"foo": "bar"}
     $
 
-.. TIP:: If you test a view which requires login, you can add a **curl** value
+.. TIP:: If you test a view which requires login, you can add a "**curl**" value
     in your post data, and the middleware will disable the csrf check for you::
 
-    $ curl -d "username=bobthesponge&password=test123&curl" -L -H 'Content-type: application/json'\
-        http://127.0.0.1:8000/accounts/login/\?next\=/testview/
+    $ curl -d "username=bobthesponge&password=test123&curl" -L -H 'Content-type: application/json' http://127.0.0.1:8000/accounts/login/\?next\=/testview/
 
 
 Limitations
@@ -77,7 +80,7 @@ tests to insure html and ajax requests are covered correctly::
 
     from django.core.urlresolvers import reverse
     from django.test import TestCase
-    from decorators import html_ajax_test
+    from ajaxmiddleware.decorators import html_ajax_test
 
 
     class ViewsTestCase(TestCase):
