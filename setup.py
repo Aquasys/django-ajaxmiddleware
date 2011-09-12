@@ -12,14 +12,14 @@ if sys.version_info < (2, 7):
 
 
 META_DATA = dict(
-    name="ajaxmiddleware",
+    name="django-ajaxmiddleware",
     version=0.1,
-    description="middleware to handle ajax requests really easily",
+    description="django middleware to handle ajax requests really easily",
     author="Adrien Lemaire",
     author_email="lemaire.adrien@gmail.com",
     url='http://github.com/Fandekasp/django-ajaxmiddleware',
 
-    keywords='ajax django',
+    keywords='django ajax json',
     classifiers=[
         "Development Status :: 4 - Beta",
         "License :: OSI Approved :: BSD License",
