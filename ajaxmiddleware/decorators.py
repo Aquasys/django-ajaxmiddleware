@@ -28,14 +28,16 @@ def html_ajax_test(orig_test=None, url=None):
 
         def _set_url(self, url):
             """
-            An url argument is mandatory for the html_ajax_test decorator.
-            You can give a hard-coded url, or a much nicer reverse with a 
+            An url argument is mandatory for the html_ajax_test decorator
+            You can give a hard-coded url, or a much nicer reverse with a
             lambda. e.g: url=lambda: reverse("some_url")
             """
             if not url:
                 raise AttributeError("html_ajax_test requires an 'url' "
                     "argument, string or lambda")
-            return [url(), url][isinstance(url, str)]
+            if not isinstance(url, str):
+                return url()
+            return url
 
         def _test(self):
             """Call the 4 tests, then run the normal tests"""

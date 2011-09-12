@@ -43,7 +43,8 @@ class BaseListViewMixin(object):
     def get(self, cls, **kwargs):
         cls.object_list = cls.get_queryset()
         allow_empty = cls.get_allow_empty()
-        if not allow_empty and len(cls.object_list) == 0: raise http.Http404(
+        if not allow_empty and len(cls.object_list) == 0:
+            raise http.Http404(
                 _(u"Empty list and '%(class_name)s.allow_empty' is "
                 "False.") % {'class_name': cls.__class__.__name__},
             )
@@ -56,7 +57,7 @@ class BaseCreateViewMixin(object):
 
     def get(self, cls, **kwargs):
         cls.object = None
-        kwargs.update({"object" : cls.object})
+        kwargs.update({"object": cls.object})
         return cls, kwargs
 
     post = get
@@ -67,7 +68,7 @@ class BaseUpdateViewMixin(object):
 
     def get(self, cls, **kwargs):
         cls.object = cls.get_object()
-        kwargs.update({"object" : cls.object})
+        kwargs.update({"object": cls.object})
         return cls, kwargs
 
     post = get
@@ -78,15 +79,15 @@ class ProcessFormViewMixin(object):
 
     def get(self, cls, **kwargs):
         form_class = cls.get_form_class()
-        kwargs.update({"form" : cls.get_form(form_class)})
+        kwargs.update({"form": cls.get_form(form_class)})
         return cls, kwargs
 
     def post(self, cls, **kwargs):
         form_class = cls.get_form_class()
         form = cls.get_form(form_class)
-        kwargs.update({"form" : form})
+        kwargs.update({"form": form})
         kwargs.update({"post_actions": {
-            "form_is_valid" : form.is_valid(),
+            "form_is_valid": form.is_valid(),
         }})
         return cls, kwargs
 
@@ -96,7 +97,7 @@ class BaseDetailViewMixin(object):
 
     def get(self, cls, **kwargs):
         cls.object = cls.get_object()
-        kwargs.update({"object" : cls.object})
+        kwargs.update({"object": cls.object})
         return cls, kwargs
 
 
@@ -110,7 +111,9 @@ class BaseDeleteViewMixin(object):
         cls.object = cls.get_object()
         cls.object.delete()
         kwargs.update({
-            "post_actions": {"success_url" : cls.get_success_url()},
+            "post_actions": {
+                "success_url": cls.get_success_url(),
+            },
             "message": "Object delete !",
         })
         return cls, kwargs

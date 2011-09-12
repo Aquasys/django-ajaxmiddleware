@@ -67,10 +67,7 @@ def get_hybridview(newcls):
             context.pop("form", None)
             context.pop("object", None)
             context.pop("object_list", None)
-            try:
-                return self.render_to_response(context)
-            except:
-                import ipdb; ipdb.set_trace()
+            return self.render_to_response(context)
 
         def post(self, request, **kwargs):
             """Hybrid post to handle all parents post actions"""

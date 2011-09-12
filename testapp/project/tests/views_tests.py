@@ -20,31 +20,32 @@ class ViewsTestCase(TestCase):
         RedirectView
     """
 
-    @html_ajax_test(url=reverse("template_view"))
+    @html_ajax_test(url=lambda: reverse("template_view"))
     def test_templateview(self):
         """Tests for TemplateView with html and ajax requests"""
         pass
 
-    @html_ajax_test(url=reverse("details_view", args=(1, )))
+    @html_ajax_test(url=lambda: reverse("details_view", args=(1, )))
     def test_detailview(self):
         """Tests for DetailView with html and ajax requests"""
         pass
 
-    @html_ajax_test(url=reverse("list_view"))
+    @html_ajax_test(url=lambda: reverse("list_view"))
     def test_listview(self):
         """Tests for ListView with html and ajax requests"""
         pass
 
-    @html_ajax_test(url=reverse("form_view"))
+    @html_ajax_test(url=lambda: reverse("form_view"))
     def test_formview(self):
         """Tests for FormView with html and ajax requests"""
         pass
 
-    @html_ajax_test(url=reverse("create_view"))
+    @html_ajax_test(url=lambda: reverse("create_view"))
     def test_createview(self):
         """Tests for CreateView with html and ajax requests"""
         pass
 
+    # give hard-coded url to the decorator
     @html_ajax_test(url=reverse("update_view", args=(1, )))
     def test_updateview(self):
         """Tests for UpdateView with html and ajax requests"""

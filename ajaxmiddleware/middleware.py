@@ -10,7 +10,7 @@ class AjaxMiddleware(object):
     """
 
     def process_request(self, request):
-        if settings.DEBUG and request.REQUEST.has_key("curl"):
+        if settings.DEBUG and "curl" in request.REQUEST:
             setattr(request, '_dont_enforce_csrf_checks', True)
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
