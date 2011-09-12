@@ -24,7 +24,7 @@ First, install the application::
 
 .. attention:: while it's in a early stage, I'd recommend to pull from github instead::
 
-    $ pip install -e git+https://Fandekasp@github.com/Fandekasp/django-ajaxmiddleware.git#egg=ajaxmiddleware
+    $ pip install -e git+https://github.com/Fandekasp/django-ajaxmiddleware#egg=ajaxmiddleware
 
 Then, add the new middleware in your settings::
 
