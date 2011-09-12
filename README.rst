@@ -85,12 +85,17 @@ tests to insure html and ajax requests are covered correctly::
 
     class ViewsTestCase(TestCase):
 
-        @html_ajax_test(url=reverse("some_url_name"))
+        @html_ajax_test(url="/some/url/"))
         def test_templateview(self):
             """Tests for TemplateView with html and ajax requests"""
             pass
 
-.. note:: This will only test for GET requests
+        @html_ajax_test(url=lambda: reverse("another_url"))
+        def test_detailview(self):
+            """Isn't it nicer to give a reverse url to the decorator ?"""
+            pass
+
+.. note:: This will only test GET requests
 
 You can also add the *ajaxmiddleware* logger to get a verbose output while
 running these tests (see ``testapp.settings.LOGGING``)

@@ -13,23 +13,35 @@ def html_ajax_test(orig_test=None, url=None):
     Works for get requests only, post requests are too particular
     """
     def _decorated(test_func):
-        def _test_html_get(self):
+        def _test_html_get(self, url):
             response = self.client.get(url, follow=True)
             self.assertRaises(ValueError, json.loads, response.content)
             self.assertIsInstance(response, TemplateResponse)
             logger.info("\nhtml get:\t%s" % ", ".join(response.template_name))
 
-        def _test_ajax_get(self):
+        def _test_ajax_get(self, url):
             response = self.client.get(url, follow=True,\
                 CONTENT_TYPE="application/json")
             self.assertNotIsInstance(response, TemplateResponse)
             self.assertIsInstance(json.loads(response.content), dict)
             logger.info("\najax get:\t%s" % response.content)
 
+        def _set_url(self, url):
+            """
+            An url argument is mandatory for the html_ajax_test decorator.
+            You can give a hard-coded url, or a much nicer reverse with a 
+            lambda. e.g: url=lambda: reverse("some_url")
+            """
+            if not url:
+                raise AttributeError("html_ajax_test requires an 'url' "
+                    "argument, string or lambda")
+            return [url(), url][isinstance(url, str)]
+
         def _test(self):
             """Call the 4 tests, then run the normal tests"""
-            _test_html_get(self)
-            _test_ajax_get(self)
+            processed_url = _set_url(self, url)
+            _test_html_get(self, processed_url)
+            _test_ajax_get(self, processed_url)
             # Execute the rest of the test
             return test_func(self)
 
