@@ -33,7 +33,7 @@ class AjaxMiddleware(object):
                 import imp
                 funcm = imp.find_module(module.split(".")[0])
                 module = imp.load_module(module, *funcm)
-                OriginalView = getattr(module, func_name)
+                OriginalView = getattr(module, func_name, None)
             except ImportError:
                 OriginalView = getattr(
                     __import__(module, globals(), locals(), [func_name, ], -1),
