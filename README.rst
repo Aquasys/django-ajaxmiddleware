@@ -15,6 +15,14 @@ that.
 
 This application remove the pain to handle this.
 
+
+.. note::
+
+    Being overwhelmed by work, I won’t upgrade this package if nobody asks for
+    it. If you’re capable, please fork and pull request to help me, thanks in
+    advance !
+
+
 Installation
 ============
 
