@@ -16,23 +16,13 @@ that.
 This application remove the pain to handle this.
 
 
-.. note::
-
-    Being overwhelmed by work, I won’t upgrade this package if nobody asks for
-    it. If you’re capable, please fork and pull request to help me, thanks in
-    advance !
-
 
 Installation
 ============
 
 First, install the application::
 
-    $ pip install django-ajaxmiddleware
-
-.. attention:: while it's in a early stage, I'd recommend to pull from github instead::
-
-    $ pip install -e git+https://github.com/Fandekasp/django-ajaxmiddleware#egg=ajaxmiddleware
+    (your_venv)$ pip install django-ajaxmiddleware
 
 Then, add the new middleware in your settings::
 
