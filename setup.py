@@ -12,7 +12,7 @@ if sys.version_info < (2, 7):
 
 META_DATA = dict(
     name="django-ajaxmiddleware",
-    version="0.1.1",
+    version="0.2.2",
     description="django middleware to handle ajax requests really easily",
     author="Adrien Lemaire",
     author_email="lemaire.adrien@gmail.com",
