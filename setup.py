@@ -16,7 +16,7 @@ META_DATA = dict(
     description="django middleware to handle ajax requests really easily",
     author="Adrien Lemaire",
     author_email="lemaire.adrien@gmail.com",
-    url='http://github.com/Fandekasp/django-ajaxmiddleware',
+    url='https://github.com/Aquasys/django-ajaxmiddleware/',
 
     keywords='django ajax json',
     classifiers=[
